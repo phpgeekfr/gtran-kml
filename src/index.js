@@ -53,7 +53,10 @@ exports.fromGeoJson = async (geojson, fileName, options = {}) => {
           ? options.symbol(feature)
           : options.symbol,
     };
-    const id = md5(JSON.stringify(symbol));
+    const id =
+      typeof options.styleId === "function"
+        ? options.styleId(feature)
+        : md5(JSON.stringify(symbol));
 
     if (!symbols[id]) {
       symbols[id] = symbol;
@@ -65,6 +68,7 @@ exports.fromGeoJson = async (geojson, fileName, options = {}) => {
   let kmlContent = tokml(geojson, {
     name: options.name || "name",
     documentName: options.documentName || "My KML",
+    description: options.description || "description",
     documentDescription:
       options.documentDescription || "Converted from GeoJson by gtran-kml",
   });
